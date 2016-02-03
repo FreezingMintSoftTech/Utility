@@ -20,14 +20,37 @@ public class ScenePolygonalImage2D : MonoBehaviour
         }
     }
 
+    void duplicate(Vector2 offset, GameObject root)
+    {
+        GameObject[] tmps = new GameObject[root.transform.childCount];
+
+        for(int i=0; i<root.transform.childCount; ++i){
+            tmps[i] = GameObject.Instantiate<GameObject>(root.transform.GetChild(i).gameObject);
+        }
+        for(int i=0; i<tmps.Length; ++i){
+            tmps[i].transform.SetParent(root.transform);
+            Vector3 p = root.transform.GetChild(i).transform.localPosition;
+            p.x += offset.x;
+            p.y += offset.y;
+            tmps[i].transform.localScale = Vector3.one;
+            tmps[i].transform.localPosition = p;
+        }
+    }
+
     void Start()
     {
+        for(int i = 0; i < 4; ++i) {
+            Vector2 offset = new Vector2(5.0f, 5.0f) * (i+1);
+            duplicate(offset, image0_);
+            duplicate(offset, image1_);
+        }
         change(0);
     }
 
 	void OnGUI()
     {
-        if(GUI.Button(new Rect(10, 10, 100, 40), "Change")){
+        string text = (mode_ == 0)? "Default Image" : "Polygonal Image";
+        if(GUI.Button(new Rect(10, 10, 100, 40), text)){
             mode_ = (mode_ == 0)? 1 : 0;
             change(mode_);
         }
