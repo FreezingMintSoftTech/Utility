@@ -48,6 +48,9 @@ namespace Utility
 
         protected override void OnPopulateMesh(UnityEngine.UI.VertexHelper toFill)
         {
+            if(null == sprite) {
+                return;
+            }
             if(null == points_) {
                 resetPoints();
             }
@@ -57,9 +60,6 @@ namespace Utility
             }
 
             int numPoints = points_.Length;
-            System.Collections.Generic.List<UIVertex> vertices = new System.Collections.Generic.List<UIVertex>(numPoints);
-            System.Collections.Generic.List<int> indices = new System.Collections.Generic.List<int>((numPoints - 2) * 3);
-
             RectTransform rectTrans = GetComponent<RectTransform>();
             UIVertex vertex = new UIVertex();
 
@@ -76,6 +76,7 @@ namespace Utility
             localToSprite.y = sprite.rect.height/rectTrans.rect.height;
             Vector2 local;
 
+            toFill.Clear();
             if(sprite.packed) {
                 //Debug.Log("sprite.textureRectOffset " + sprite.textureRectOffset);
                 //Debug.Log("sprite.textureRect " + sprite.textureRect);
@@ -97,7 +98,7 @@ namespace Utility
                     vertex.uv0.y = (local.y + sprite.textureRect.yMin) * isize.y;
 
                     //Debug.Log(vertex.uv0);
-                    vertices.Add(vertex);
+                    toFill.AddVert(vertex);
                 }
 
             } else {
@@ -112,18 +113,13 @@ namespace Utility
                     vertex.uv0.x = (local.x + sprite.textureRect.xMin) * isize.x;
                     vertex.uv0.y = (local.y + sprite.textureRect.yMin) * isize.y;
 
-                    vertices.Add(vertex);
+                    toFill.AddVert(vertex);
                 }
             }
 
             for(int i = 2, tri = 0; i < numPoints; ++i, tri += 3) {
-                indices.Add(0);
-                indices.Add(i-1);
-                indices.Add(i);
+                toFill.AddTriangle(0, i-1, i);
             }
-
-            toFill.Clear();
-            toFill.AddUIVertexStream(vertices, indices);
         }
     }
 }

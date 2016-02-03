@@ -116,6 +116,9 @@ namespace Utility
         void OnSceneGUI()
         {
             PolygonalImage2D polygon2D = target as PolygonalImage2D;
+            if(null == polygon2D.points_) {
+                return;
+            }
             for(int i = 0; i < polygon2D.points_.Length; ++i) {
                 Vector3 pos = polygon2D.points_[i];
                 pos = polygon2D.transform.TransformPoint(pos);
