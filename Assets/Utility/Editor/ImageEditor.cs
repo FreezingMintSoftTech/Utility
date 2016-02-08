@@ -5,7 +5,7 @@ using UnityEditor.AnimatedValues;
 using UnityEngine.UI;
 
 
-namespace Utility
+namespace LUtil
 {
     /// <summary>
     /// Editor class used to edit UI Sprites.

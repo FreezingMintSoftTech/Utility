@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Utility
+namespace LUtil
 {
     [RequireComponent(typeof(CanvasRenderer)), ExecuteInEditMode]
     public class PolygonalImage2D : UnityEngine.UI.Image

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utility
+namespace LUtil
 {
     // Tools for the editor
     internal class SpriteDrawUtility

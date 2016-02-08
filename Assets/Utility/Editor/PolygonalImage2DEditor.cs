@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Utility
+namespace LUtil
 {
     [CustomEditor(typeof(PolygonalImage2D)), CanEditMultipleObjects]
     public class PolygonalImage2DEditor : ImageEditor
