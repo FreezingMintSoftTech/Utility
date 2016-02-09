@@ -11,7 +11,7 @@ namespace LUtil
         private static GUIContent ButtonDeleteContent = new GUIContent("-", "delete");
         private static GUIContent ButtonAddContent = new GUIContent("+", "add");
 
-        public static void ShowList(SerializedProperty list)
+        public static void ShowList(SerializedProperty list, int selected)
         {
             if(!list.isArray) {
                 EditorGUILayout.HelpBox(list.name + " is neither an array nor a list.", MessageType.Error);
@@ -26,11 +26,18 @@ namespace LUtil
                 if(propSize.hasMultipleDifferentValues) {
                     EditorGUILayout.HelpBox("Now showing arrays or lists with different sizes.", MessageType.Info);
                 } else {
-
                     GUILayoutOption buttonMiniWidth = GUILayout.Width(ButtonMiniWidth);
+                    GUIContent elemLabel = new GUIContent();
                     for(int i = 0; i < list.arraySize; ++i) {
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.PropertyField(list.GetArrayElementAtIndex(i));
+
+                        if(selected == i) {
+                            elemLabel.text = string.Format("*{0}*", i);
+                            EditorGUILayout.PropertyField(list.GetArrayElementAtIndex(i), elemLabel);
+                        } else {
+                            elemLabel.text = i.ToString();
+                            EditorGUILayout.PropertyField(list.GetArrayElementAtIndex(i), elemLabel);
+                        }
 
                         if(GUILayout.Button(ButtonDuplicateContent, EditorStyles.miniButtonLeft, buttonMiniWidth)) {
                             list.InsertArrayElementAtIndex(i);
@@ -65,7 +72,7 @@ namespace LUtil
 
             SerializedProperty propPoints = serializedObject.FindProperty("points_");
             //EditorGUILayout.PropertyField(propPoints, true);
-            ShowList(propPoints);
+            ShowList(propPoints, selected_);
 
             if(!serializedObject.isEditingMultipleObjects) {
                 int numPoints = propPoints.arraySize;
@@ -113,17 +120,36 @@ namespace LUtil
 
         public static readonly Vector3 SnapeSize = new Vector3(0.5f, 0.5f, 0.5f);
 
+        private class Track
+        {
+            public bool selected_;
+            public void DrawCapHook(int controlID, Vector3 position, Quaternion rotation, float size)
+            {
+                if(controlID == GUIUtility.hotControl) {
+                    this.selected_ = true;
+                }
+                Handles.DotCap(controlID, position, rotation, size);
+            }
+        };
+
+        int selected_;
+
         void OnSceneGUI()
         {
             PolygonalImage2D polygon2D = target as PolygonalImage2D;
             if(null == polygon2D.points_) {
                 return;
             }
+
+            Track track = new Track();
             for(int i = 0; i < polygon2D.points_.Length; ++i) {
                 Vector3 pos = polygon2D.points_[i];
                 pos = polygon2D.transform.TransformPoint(pos);
-                Vector3 nextPos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1.5f, SnapeSize, Handles.DotCap);
-                if(pos != nextPos) {
+                track.selected_ = false;
+                Vector3 nextPos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1.5f, SnapeSize, track.DrawCapHook);
+
+                if(pos != nextPos || track.selected_) {
+                    selected_ = i;
                     polygon2D.points_[i] = polygon2D.transform.InverseTransformPoint(nextPos);
                     polygon2D.SetVerticesDirty();
                     EditorUtility.SetDirty(target);
