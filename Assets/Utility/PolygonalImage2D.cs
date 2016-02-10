@@ -58,14 +58,15 @@ namespace LUtil
             if(points_.Length < 3) {
                 return;
             }
+            Debug.Log("OnPopulateMesh:" + gameObject.name + " " + sprite.packed);
 
             int numPoints = points_.Length;
             RectTransform rectTrans = GetComponent<RectTransform>();
             UIVertex vertex = new UIVertex();
 
             Vector2 isize;
-            isize.x = (1.0e-4f < sprite.texture.width) ? 1.0f / sprite.texture.width : 1.0f;
-            isize.y = (1.0e-4f < sprite.texture.height) ? 1.0f / sprite.texture.height : 1.0f;
+            isize.x = (1 < sprite.texture.width) ? 1.0f / sprite.texture.width : 1.0f;
+            isize.y = (1 < sprite.texture.height) ? 1.0f / sprite.texture.height : 1.0f;
 
             Vector2 localOffset;
             localOffset.x = rectTrans.pivot.x * rectTrans.rect.width;
@@ -74,18 +75,21 @@ namespace LUtil
             Vector2 localToSprite;
             localToSprite.x = sprite.rect.width/rectTrans.rect.width;
             localToSprite.y = sprite.rect.height/rectTrans.rect.height;
-            Vector2 local;
 
+            //Debug.Log("sprite.packed " + sprite.packed);
+            //Debug.Log("sprite.textureRectOffset " + sprite.textureRectOffset);
+            //Debug.Log("sprite.textureRect " + sprite.textureRect);
+            //Debug.Log("sprite.rect " + sprite.rect);
+            //Debug.Log("sprite.pivot " + sprite.pivot);
+
+            //Debug.Log("RectTransform.rect " + rectTrans.rect);
+            //Debug.Log("RectTransform.pivot " + rectTrans.pivot);
+
+            Vector2 local;
             toFill.Clear();
             if(sprite.packed) {
-                //Debug.Log("sprite.textureRectOffset " + sprite.textureRectOffset);
-                //Debug.Log("sprite.textureRect " + sprite.textureRect);
-                //Debug.Log("sprite.rect " + sprite.rect);
-                //Debug.Log("sprite.pivot " + sprite.pivot);
-
-                //Debug.Log("RectTransform.rect " + rectTrans.rect);
-                //Debug.Log("RectTransform.pivot " + rectTrans.pivot);
-
+                localOffset.x += sprite.textureRect.xMin;
+                localOffset.y += sprite.textureRect.yMin;
                 for(int i = 0; i < numPoints; ++i) {
                     vertex.position = points_[i];
                     vertex.color = this.color;
@@ -94,10 +98,9 @@ namespace LUtil
                     local.x *= localToSprite.x;
                     local.y *= localToSprite.y;
 
-                    vertex.uv0.x = (local.x + sprite.textureRect.xMin) * isize.x;
-                    vertex.uv0.y = (local.y + sprite.textureRect.yMin) * isize.y;
+                    vertex.uv0.x = (local.x) * isize.x;
+                    vertex.uv0.y = (local.y) * isize.y;
 
-                    //Debug.Log(vertex.uv0);
                     toFill.AddVert(vertex);
                 }
 
@@ -110,8 +113,8 @@ namespace LUtil
                     local.x *= localToSprite.x;
                     local.y *= localToSprite.y;
 
-                    vertex.uv0.x = (local.x + sprite.textureRect.xMin) * isize.x;
-                    vertex.uv0.y = (local.y + sprite.textureRect.yMin) * isize.y;
+                    vertex.uv0.x = (local.x) * isize.x;
+                    vertex.uv0.y = (local.y) * isize.y;
 
                     toFill.AddVert(vertex);
                 }
