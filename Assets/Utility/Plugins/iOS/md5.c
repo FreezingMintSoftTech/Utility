@@ -4,6 +4,7 @@
 @date 2016/02/10 create
 */
 #include "md5.h"
+#include <assert.h>
 #include <string.h>
 
 #ifdef __cplusplus
@@ -15,22 +16,13 @@ extern "C" {
 //--- MD5
 //---
 //----------------------------------------------------
-
-typedef union MD5Hash_t
-{
-    u32	u32_[4];
-    u8  u8_[16];
-} MD5Hash;
-
-struct MD5Context_t
-{
-    MD5Hash hash_;
-    u32 length_[2];
-    u8 buffer_[64];
-};
-
-typedef struct MD5Context_t MD5Context;
-
+#ifndef LASSERT
+#ifdef _DEBUG
+#define LASSERT(exp) assert((exp))
+#else
+#define LASSERT(exp)
+#endif
+#endif
 
 static const s8 md5_S[16] =
 {
@@ -59,6 +51,17 @@ static const u32 md5_K[64] =
     0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
     0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
+
+static LUTIL_INLINE void initMD5Context(struct MD5Context_t* context)
+{
+    context->hash_.u32_[0] = 0x67452301; //A
+    context->hash_.u32_[1] = 0xefcdab89; //B
+    context->hash_.u32_[2] = 0x98badcfe; //C
+    context->hash_.u32_[3] = 0x10325476; //D
+
+    context->length_[0] = 0;
+    context->length_[1] = 0;
+}
 
 static LUTIL_INLINE u32 F(u32 x, u32 y, u32 z)
 {
@@ -275,32 +278,43 @@ RFC document: http://www.ietf.org/rfc/rfc1321.txt
 */
 EXPORT_API void calcMD5(u8* hash, u32 length, const u8* data)
 {
-    //
     MD5Context context;
-    context.hash_.u32_[0] = 0x67452301; //A
-    context.hash_.u32_[1] = 0xefcdab89; //B
-    context.hash_.u32_[2] = 0x98badcfe; //C
-    context.hash_.u32_[3] = 0x10325476; //D
-
-    context.length_[0] = 0;
-    context.length_[1] = 0;
+    initMD5Context(&context);
 
     updateMD5(&context, length, data);
 
-    u32 high = (context.length_[0]>>29) | (context.length_[1]<<3);
-    u32 low  = (context.length_[0]<<3);
+    termMD5(hash, &context);
+}
+
+void initMD5(struct MD5Context_t* context)
+{
+    LASSERT(NULL != context);
+    initMD5Context(context);
+}
+
+void processMD5(struct MD5Context_t* context, u32 offset, u32 length, const u8* data)
+{
+    LASSERT(NULL != context);
+    updateMD5(context, length, data+offset);
+}
+
+void termMD5(u8* hash, struct MD5Context_t* context)
+{
+    LASSERT(NULL != context);
+
+    u32 high = (context->length_[0]>>29) | (context->length_[1]<<3);
+    u32 low  = (context->length_[0]<<3);
     u8 bytes[8];
     setU32ToLittleEndian(bytes, low, 0);
     setU32ToLittleEndian(bytes, high, 4);
 
-    u32 index = context.length_[0] & 0x3FU;
+    u32 index = context->length_[0] & 0x3FU;
     u32 padLen = (index<56)? (56-index) : (120-index);
-    updateMD5(&context, padLen, md5_Padding);
-    updateMD5(&context, 8, bytes);
-
+    updateMD5(context, padLen, md5_Padding);
+    updateMD5(context, 8, bytes);
 
     for(index=0; index<16; ++index){
-        hash[index] = context.hash_.u8_[index];
+        hash[index] = context->hash_.u8_[index];
     }
 }
 

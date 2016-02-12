@@ -14,8 +14,28 @@ namespace LUtil
         private const string PluginName = "md5";
 #endif
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct Context
+        {
+            [MarshalAs(UnmanagedType.ByValArray,SizeConst=16)]
+            public byte[] hash_;
+            [MarshalAs(UnmanagedType.ByValArray,SizeConst=2)]
+            public uint[] length_;
+            [MarshalAs(UnmanagedType.ByValArray,SizeConst=64)]
+            public byte[] buffer_;
+        };
+
         [DllImport(PluginName)]
         private static extern void calcMD5(System.IntPtr hash, uint length, System.IntPtr data);
+
+        [DllImport(PluginName)]
+        private static extern void initMD5(System.IntPtr context);
+
+        [DllImport(PluginName)]
+        private static extern void processMD5(System.IntPtr context, uint offset, uint length, System.IntPtr data);
+
+        [DllImport(PluginName)]
+        private static extern void termMD5(System.IntPtr hash, System.IntPtr context);
 
         public static byte[] GetMD5HashBytes(byte[] bytes)
         {
@@ -29,18 +49,9 @@ namespace LUtil
             return hash;
         }
 
-        public static string GetMD5Hash(byte[] bytes)
+        private const string Digits = "0123456789ABCDEF";
+        private static string toHex(byte[] hash)
         {
-            const string Digits = "0123456789ABCDEF";
-
-            byte[] hash = new byte[16];
-
-            GCHandle hBytes = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            GCHandle hHash = GCHandle.Alloc(hash, GCHandleType.Pinned);
-            calcMD5(hHash.AddrOfPinnedObject(), (uint)bytes.Length, hBytes.AddrOfPinnedObject());
-            hHash.Free();
-            hBytes.Free();
-
             char[] hashChars = new char[32];
             for(int i = 0; i < 16; ++i) {
                 int index = i<<1;
@@ -48,6 +59,69 @@ namespace LUtil
                 hashChars[index+1] = Digits[hash[i]&0x0F];
             }
             return new string(hashChars);
+        }
+
+        public static string GetMD5Hash(byte[] bytes)
+        {
+            byte[] hash = new byte[16];
+
+            GCHandle hBytes = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            GCHandle hHash = GCHandle.Alloc(hash, GCHandleType.Pinned);
+
+            calcMD5(hHash.AddrOfPinnedObject(), (uint)bytes.Length, hBytes.AddrOfPinnedObject());
+
+            hHash.Free();
+            hBytes.Free();
+            return toHex(hash);
+        }
+
+        public static string GetMD5Hash(System.IO.BinaryReader reader)
+        {
+            System.IntPtr pContext = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Context)));
+            initMD5(pContext);
+
+            byte[] bytes = new byte[64];
+            GCHandle hBytes = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            int size = 0;
+            while(0 < (size = reader.Read(bytes, 0, 64))) {
+                processMD5(pContext, 0, (uint)size, hBytes.AddrOfPinnedObject());
+            }
+            hBytes.Free();
+
+            byte[] hash = new byte[16];
+            GCHandle hHash = GCHandle.Alloc(hash, GCHandleType.Pinned);
+            termMD5(hHash.AddrOfPinnedObject(), pContext);
+            hHash.Free();
+            Marshal.FreeHGlobal(pContext);
+            return toHex(hash);
+        }
+
+        public static string GetMD5Hash(string filepath)
+        {
+            try {
+                using(System.IO.FileStream file = new System.IO.FileStream(filepath, System.IO.FileMode.Open, System.IO.FileAccess.Read)) {
+                    System.IntPtr pContext = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Context)));
+                    initMD5(pContext);
+
+                    byte[] bytes = new byte[64];
+                    GCHandle hBytes = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+                    int size = 0;
+                    while(0 < (size = file.Read(bytes, 0, 64))) {
+                        processMD5(pContext, 0, (uint)size, hBytes.AddrOfPinnedObject());
+                    }
+                    hBytes.Free();
+
+                    byte[] hash = new byte[16];
+                    GCHandle hHash = GCHandle.Alloc(hash, GCHandleType.Pinned);
+                    termMD5(hHash.AddrOfPinnedObject(), pContext);
+                    hHash.Free();
+                    Marshal.FreeHGlobal(pContext);
+                    return toHex(hash);
+                }
+            } catch {
+
+            }
+            return string.Empty;
         }
     }
 }

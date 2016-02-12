@@ -72,11 +72,30 @@ typedef double f64;
 extern "C" {
 #endif
 
+EXPORT_API typedef union MD5Hash_t
+{
+    u32	u32_[4];
+    u8  u8_[16];
+} MD5Hash;
+
+EXPORT_API struct MD5Context_t
+{
+    MD5Hash hash_;
+    u32 length_[2];
+    u8 buffer_[64];
+};
+
+typedef struct MD5Context_t MD5Context;
+
 /**
 The MD5 algorithm
 RFC document: http://www.ietf.org/rfc/rfc1321.txt
 */
 EXPORT_API void calcMD5(u8* hash, u32 length, const u8* data);
+
+EXPORT_API void initMD5(struct MD5Context_t* context);
+EXPORT_API void processMD5(struct MD5Context_t* context, u32 offset, u32 length, const u8* data);
+EXPORT_API void termMD5(u8* hash, struct MD5Context_t* context);
 
 #ifdef __cplusplus
 }
