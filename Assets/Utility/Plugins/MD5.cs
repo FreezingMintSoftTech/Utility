@@ -109,6 +109,8 @@ namespace LUtil
                     while(0 < (size = file.Read(bytes, 0, 64))) {
                         processMD5(pContext, 0, (uint)size, hBytes.AddrOfPinnedObject());
                     }
+                    file.Close();
+
                     hBytes.Free();
 
                     byte[] hash = new byte[16];
