@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/**
+@file SceneMD5.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 

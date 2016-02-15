@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/**
+@file ScenePolygonalImage2D.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using UnityEngine;
 using System.Collections;
 
 public class ScenePolygonalImage2D : MonoBehaviour

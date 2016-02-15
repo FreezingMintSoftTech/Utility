@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/**
+@file TGA.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using UnityEngine;
 
 namespace LUtil
 {

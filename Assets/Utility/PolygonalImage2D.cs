@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/**
+@file PolygonalImage2D.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using UnityEngine;
 
 namespace LUtil
 {
@@ -58,7 +63,7 @@ namespace LUtil
             if(points_.Length < 3) {
                 return;
             }
-            Debug.Log("OnPopulateMesh:" + gameObject.name + " " + sprite.packed);
+            //Debug.Log("OnPopulateMesh:" + gameObject.name + " " + sprite.packed);
 
             int numPoints = points_.Length;
             RectTransform rectTrans = GetComponent<RectTransform>();

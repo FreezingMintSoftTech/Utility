@@ -1,4 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿/**
+@file MD5.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using System.Runtime.InteropServices;
 
 namespace LUtil
 {

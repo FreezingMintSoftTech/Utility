@@ -1,4 +1,9 @@
-﻿using UnityEditor;
+﻿/**
+@file PolygonalImage2DEditor.cs
+@author t-sakai
+@date 2016/02/15
+*/
+using UnityEditor;
 using UnityEngine;
 
 namespace LUtil
