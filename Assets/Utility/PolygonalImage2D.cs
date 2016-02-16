@@ -1,7 +1,4 @@
 ﻿/**
-Copyright (c) 2016 Takuro Sakai
-
-/**
 @file PolygonalImage2D.cs
 @author t-sakai
 @date 2016/02/15
