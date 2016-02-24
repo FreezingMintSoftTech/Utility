@@ -9,7 +9,7 @@ namespace Flow
 {
     public class SequenceCache
     {
-        private struct Cache<T> where T:FunctionSet, new()
+        private struct Cache<T> where T:EnumeratorSet, new()
         {
             public int top_;
             public T[] items_;

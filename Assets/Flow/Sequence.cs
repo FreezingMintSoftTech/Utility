@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Flow
 {
-    public class Sequence : FunctionSet
+    public class Sequence : EnumeratorSet
     {
         private int current_;
 

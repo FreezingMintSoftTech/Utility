@@ -1,24 +1,24 @@
 ﻿/**
-@file FunctionSet.cs
+@file EnumeratorSet.cs
 @author t-sakai
-@date 2016/02/19
+@date 2016/02/23
 */
 using System.Collections;
 
 namespace Flow
 {
-    public abstract class FunctionSet : IEnumerator
+    public abstract class EnumeratorSet : IEnumerator
     {
         protected int size_;
         protected IEnumerator[] funcs_;
 
-        public FunctionSet()
+        public EnumeratorSet()
         {
             size_ = 0;
             funcs_ = new IEnumerator[0];
         }
 
-        public FunctionSet(int capacity)
+        public EnumeratorSet(int capacity)
         {
             //System.Diagnostics.Debug.Assert(0<=capacity);
             size_ = 0;

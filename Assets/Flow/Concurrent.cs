@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Flow
 {
-    public class Concurrent : FunctionSet
+    public class Concurrent : EnumeratorSet
     {
         public Concurrent()
         {

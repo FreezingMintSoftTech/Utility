@@ -12,6 +12,11 @@ public class SceneFlow : MonoBehaviour
         yield break;
     }
 
+    void printFunc(string str)
+    {
+        Debug.LogFormat("{0} - {1}", str, Time.time);
+    }
+
 	void Start()
     {
         Flow.Sequence sequence = sequenceCache_.sequence();
@@ -29,11 +34,12 @@ public class SceneFlow : MonoBehaviour
         Flow.DelayedConcurrent delayedConcurrent = sequenceCache_.delayedConcurrent();
         delayedConcurrent.Add(print("Delayed A"));
         delayedConcurrent.Add(print("Delayed B"), 1.0f);
+        delayedConcurrent.Add(new Flow.Functor(Flow.ToDelegate1<string>.Do(this.printFunc), "Delayed Func A"), 1.0f);
         sequence.Add(delayedConcurrent);
 
         process_ = sequenceCache_.build(sequence);
 	}
-	
+
 	void Update()
     {
         process_.run();
