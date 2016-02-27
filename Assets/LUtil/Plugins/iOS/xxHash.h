@@ -1,9 +1,9 @@
-﻿#ifndef INC_LUTIL_MD5_H__
-#define INC_LUTIL_MD5_H__
+﻿#ifndef INC_LUTIL_XXHASH_H__
+#define INC_LUTIL_XXHASH_H__
 /**
-@file md5.h
+@file xxHash.h
 @author t-sakai
-@date 2016/02/10 create
+@date 2016/02/28 create
 */
 
 #if defined(_MSC_VER)
@@ -72,33 +72,47 @@ typedef double f64;
 extern "C" {
 #endif
 
-EXPORT_API typedef union MD5Hash_t
+EXPORT_API struct Context32_t
 {
-    u32	u32_[4];
-    u8  u8_[16];
-} MD5Hash;
-
-EXPORT_API struct MD5Context_t
-{
-    MD5Hash hash_;
-    u32 length_[2];
-    u8 buffer_[64];
+    u64 totalLength_;
+    u32 seed_;
+    u32 v1_;
+    u32 v2_;
+    u32 v3_;
+    u32 v4_;
+    u32 mem_[4];
+    u32 memSize_;
 };
 
-typedef struct MD5Context_t MD5Context;
+EXPORT_API struct Context64_t
+{
+    u64 totalLength_;
+    u64 seed_;
+    u64 v1_;
+    u64 v2_;
+    u64 v3_;
+    u64 v4_;
+    u64 mem_[4];
+    u64 memSize_;
+};
+
+typedef struct Context32_t Context32;
+typedef struct Context64_t Context64;
 
 /**
-The MD5 algorithm
-RFC document: http://www.ietf.org/rfc/rfc1321.txt
+The xxHash algorithm
+https://github.com/Cyan4973/xxHash
 */
-EXPORT_API void calcMD5(u8* hash, u32 length, const u8* data);
+EXPORT_API void xxHash32Init(struct Context32_t* context, u32 seed);
+EXPORT_API void xxHash32Update(struct Context32_t* context, const u8* input, u32 length);
+EXPORT_API u32 xxHash32Finalize(struct Context32_t* context);
 
-EXPORT_API void initMD5(struct MD5Context_t* context);
-EXPORT_API void processMD5(struct MD5Context_t* context, u32 offset, u32 length, const u8* data);
-EXPORT_API void termMD5(u8* hash, struct MD5Context_t* context);
+EXPORT_API void xxHash64Init(struct Context64_t* context, u64 seed);
+EXPORT_API void xxHash64Update(struct Context64_t* context, const u8* input, u32 length);
+EXPORT_API u64 xxHash64Finalize(struct Context64_t* context);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //INC_LUTIL_MD5_H__
+#endif //INC_LUTIL_XXHASH_H__

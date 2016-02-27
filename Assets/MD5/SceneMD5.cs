@@ -15,15 +15,14 @@ public class SceneMD5 : MonoBehaviour
 
     public enum State
     {
-        Check =0,
         CSharp,
-        Native,
+        xxHash,
         None,
     };
 
     private static readonly string Chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private State state_ = State.Check;
+    private State state_ = State.CSharp;
     private int count_;
     private List<byte[]> samples_ = new List<byte[]>();
     private string[] results_ = new string[NumSamples];
@@ -72,21 +71,6 @@ public class SceneMD5 : MonoBehaviour
     {
         switch(state_)
         {
-        case State.Check:
-            {
-                System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
-                for(int i = 0; i < NumSamples; ++i) {
-                    string n = LUtil.MD5.GetMD5Hash(samples_[i]);
-                    string c = GetMD5Hash(md5, samples_[i]);
-                    if(n != c) {
-                        Debug.LogFormat("Error: native {0} != csharp {1}", n, c);
-                    }
-                }
-                md5.Clear();
-                state_ = State.CSharp;
-            }
-            break;
-
         case State.CSharp:
             {
                 System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
@@ -99,20 +83,24 @@ public class SceneMD5 : MonoBehaviour
                 stopwatch_.Stop();
                 md5.Clear();
                 Debug.LogFormat("charp:{0} samples {1} sec", NumSamples, stopwatch_.Elapsed.TotalSeconds);
-                state_ = State.Native;
+                state_ = State.xxHash;
             }
             break;
 
-        case State.Native:
+        case State.xxHash:
             {
                 stopwatch_.Reset();
                 stopwatch_.Start();
 
+                //string str = "Nobody inspects the spammish repetition";
+                //string hashStr = LUtil.xxHash.GetHash(System.Text.Encoding.ASCII.GetBytes(str));
+                //Debug.Log(hashStr);
+
                 for(int i = 0; i < NumSamples; ++i) {
-                    results_[i] = LUtil.MD5.GetMD5Hash(samples_[i]);
+                    results_[i] = LUtil.xxHash.GetHash(samples_[i]);
                 }
                 stopwatch_.Stop();
-                Debug.LogFormat("native:{0} samples {1} sec", NumSamples, stopwatch_.Elapsed.TotalSeconds);
+                Debug.LogFormat("xxHash:{0} samples {1} sec", NumSamples, stopwatch_.Elapsed.TotalSeconds);
                 state_ = State.None;
             }
             break;

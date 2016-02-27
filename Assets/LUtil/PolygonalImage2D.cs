@@ -12,6 +12,15 @@ namespace LUtil
     {
         public Vector2[] points_;
 
+        protected override void Awake()
+        {
+
+            base.Awake();
+            if(null == points_){
+                resetPoints();
+            }
+        }
+
         private static Vector2 calcUV(RectTransform rectTrans, Sprite sprite, Vector2 position)
         {
             Rect rect = rectTrans.rect;
@@ -53,9 +62,6 @@ namespace LUtil
 
         protected override void OnPopulateMesh(UnityEngine.UI.VertexHelper toFill)
         {
-            if(null == sprite) {
-                return;
-            }
             if(null == points_) {
                 resetPoints();
             }
@@ -63,19 +69,44 @@ namespace LUtil
             if(points_.Length < 3) {
                 return;
             }
-            //Debug.Log("OnPopulateMesh:" + gameObject.name + " " + sprite.packed);
-
             int numPoints = points_.Length;
             RectTransform rectTrans = GetComponent<RectTransform>();
             UIVertex vertex = new UIVertex();
 
-            Vector2 isize;
-            isize.x = (1 < sprite.texture.width) ? 1.0f / sprite.texture.width : 1.0f;
-            isize.y = (1 < sprite.texture.height) ? 1.0f / sprite.texture.height : 1.0f;
-
             Vector2 localOffset;
             localOffset.x = rectTrans.pivot.x * rectTrans.rect.width;
             localOffset.y = rectTrans.pivot.y * rectTrans.rect.height;
+
+            Vector2 isize;
+            Vector2 local;
+            toFill.Clear();
+
+            if(null == sprite) {
+                isize.x = (1.0e-4f < rectTrans.rect.width) ? 1.0f / rectTrans.rect.width : 1.0f;
+                isize.y = (1.0e-4f < rectTrans.rect.height) ? 1.0f / rectTrans.rect.height : 1.0f;
+
+                for(int i = 0; i < numPoints; ++i) {
+                    vertex.position = points_[i];
+                    vertex.color = this.color;
+
+                    local = points_[i] + localOffset;
+
+                    vertex.uv0.x = (local.x) * isize.x;
+                    vertex.uv0.y = (local.y) * isize.y;
+
+                    toFill.AddVert(vertex);
+                }
+
+                for(int i = 2, tri = 0; i < numPoints; ++i, tri += 3) {
+                    toFill.AddTriangle(0, i - 1, i);
+                }
+                return;
+            }
+
+            //Debug.Log("OnPopulateMesh:" + gameObject.name + " " + sprite.packed);
+
+            isize.x = (1 < sprite.texture.width) ? 1.0f / sprite.texture.width : 1.0f;
+            isize.y = (1 < sprite.texture.height) ? 1.0f / sprite.texture.height : 1.0f;
 
             Vector2 localToSprite;
             localToSprite.x = sprite.rect.width/rectTrans.rect.width;
@@ -90,8 +121,6 @@ namespace LUtil
             //Debug.Log("RectTransform.rect " + rectTrans.rect);
             //Debug.Log("RectTransform.pivot " + rectTrans.pivot);
 
-            Vector2 local;
-            toFill.Clear();
             if(sprite.packed) {
                 localOffset.x += sprite.textureRect.xMin;
                 localOffset.y += sprite.textureRect.yMin;
