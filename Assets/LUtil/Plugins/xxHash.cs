@@ -31,8 +31,13 @@
    You can contact the author at :
    - xxHash source repository : https://github.com/Cyan4973/xxHash
 */
-
+/**
+@file xxHash.cs
+@author t-sakai
+@date 2016/02/28
+*/
 using System.Runtime.InteropServices;
+
 namespace LUtil
 {
     public class xxHash

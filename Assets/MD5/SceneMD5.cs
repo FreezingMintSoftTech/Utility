@@ -17,6 +17,7 @@ public class SceneMD5 : MonoBehaviour
     {
         CSharp,
         xxHash,
+        MurmurHash,
         None,
     };
 
@@ -101,6 +102,23 @@ public class SceneMD5 : MonoBehaviour
                 }
                 stopwatch_.Stop();
                 Debug.LogFormat("xxHash:{0} samples {1} sec", NumSamples, stopwatch_.Elapsed.TotalSeconds);
+                state_ = State.MurmurHash;
+            }
+            break;
+
+        case State.MurmurHash:
+            {
+                //string str = "The quick brown fox jumps over the lazy dog";
+                //string hashStr = LUtil.MurmurHash.GetHash(System.Text.Encoding.ASCII.GetBytes(str));
+                //Debug.Log(hashStr);
+
+                stopwatch_.Reset();
+                stopwatch_.Start();
+                for(int i = 0; i < NumSamples; ++i) {
+                    results_[i] = LUtil.MurmurHash.GetHash(samples_[i]);
+                }
+                stopwatch_.Stop();
+                Debug.LogFormat("MurmurHash:{0} samples {1} sec", NumSamples, stopwatch_.Elapsed.TotalSeconds);
                 state_ = State.None;
             }
             break;
