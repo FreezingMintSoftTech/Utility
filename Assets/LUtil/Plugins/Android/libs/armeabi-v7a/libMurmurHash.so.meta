@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: ae3043003bc52fb4ba388996338cd998
-timeCreated: 1456590976
-licenseType: Free
+guid: 9f25ee470d8a5b64280ffd895e006c9a
+timeCreated: 1456716046
+licenseType: Pro
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -9,9 +9,9 @@ PluginImporter:
   isPreloaded: 0
   platformData:
     Android:
-      enabled: 0
+      enabled: 1
       settings:
-        CPU: AnyCPU
+        CPU: ARMv7
     Any:
       enabled: 0
       settings: {}
@@ -46,7 +46,7 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     iOS:
-      enabled: 1
+      enabled: 0
       settings:
         CompileFlags: 
         FrameworkDependencies: 
