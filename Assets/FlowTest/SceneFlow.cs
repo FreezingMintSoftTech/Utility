@@ -9,7 +9,10 @@ public class SceneFlow : MonoBehaviour
     IEnumerator print(string str)
     {
         Debug.LogFormat("{0} - {1}", str, Time.time);
-        yield break;
+        IEnumerator wait = Flow.WaitFor.seconds(3.0f);
+        while(wait.MoveNext()) {
+            yield return null;
+        }
     }
 
     void printFunc(string str)
@@ -21,7 +24,7 @@ public class SceneFlow : MonoBehaviour
     {
         Flow.Sequence sequence = sequenceCache_.sequence();
         sequence.Add(print("Sequence A"));
-        sequence.Add(Flow.WaitFor.seconds(1.0f));
+        //sequence.Add(Flow.WaitFor.seconds(1.0f));
         sequence.Add(print("Sequence B"));
 
         for(int i = 0; i < 5; ++i) {

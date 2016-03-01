@@ -26,6 +26,7 @@ namespace Flow
 
     public struct Functor : System.Collections.IEnumerator
     {
+        private bool done_;
         private System.Delegate func_;
         private System.Object[] args_;
 
@@ -33,6 +34,7 @@ namespace Flow
         {
             func_ = func;
             args_ = args;
+            done_ = false;
         }
 
         public object Current
@@ -42,12 +44,16 @@ namespace Flow
 
         public bool MoveNext()
         {
-            func_.DynamicInvoke(args_);
+            if(!done_) {
+                func_.DynamicInvoke(args_);
+                done_ = true;
+            }
             return false;
         }
 
         public void Reset()
         {
+            done_ = false;
         }
     };
 }

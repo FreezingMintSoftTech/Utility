@@ -28,7 +28,7 @@ namespace Flow
 
         public override object Current
         {
-            get { return (current_<size_)? funcs_[current_].Current : null; }
+            get { return null; }
         }
 
         public override bool MoveNext()
@@ -36,6 +36,7 @@ namespace Flow
             if(size_<=current_) {
                 return false;
             }
+
             if(funcs_[current_].MoveNext()) {
                 return true;
             }

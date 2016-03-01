@@ -28,7 +28,6 @@ namespace Flow
 
         public DelayedConcurrent(int capacity)
         {
-            //System.Diagnostics.Debug.Assert(0<=capacity);
             size_ = 0;
             funcs_ = new Func[capacity];
             TimeScale = Config.InitialTimeScale;
@@ -43,7 +42,6 @@ namespace Flow
         {
             get
             {
-                //System.Diagnostics.Debug.Assert(0<=index && index<size_);
                 return funcs_[index].func_;
             }
         }
@@ -62,7 +60,6 @@ namespace Flow
 
         public void Add(IEnumerator func, float delay=0.0f)
         {
-            //System.Diagnostics.Debug.Assert(null != func);
             if(funcs_.Length<=size_){
                 Expand();
             }

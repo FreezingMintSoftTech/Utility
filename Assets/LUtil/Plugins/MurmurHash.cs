@@ -117,7 +117,6 @@ namespace LUtil
                 context.h1_ = context.h1_*5 + 0xe6546b64U;
             }
 
-            int t = length & 3;
             uint l1 = 0;
             switch(length&3)
             {

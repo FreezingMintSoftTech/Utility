@@ -109,6 +109,12 @@ namespace Flow
             return new Process(func);
         }
 
+        public void destroy(ref Process process)
+        {
+            process.clear();
+            clear();
+        }
+
         public Sequence sequence()
         {
             return cacheSequence_.get();

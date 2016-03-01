@@ -20,7 +20,6 @@ namespace Flow
 
         public EnumeratorSet(int capacity)
         {
-            //System.Diagnostics.Debug.Assert(0<=capacity);
             size_ = 0;
             funcs_ = new IEnumerator[capacity];
         }
@@ -34,7 +33,6 @@ namespace Flow
         {
             get
             {
-                //System.Diagnostics.Debug.Assert(0<=index && index<size_);
                 return funcs_[index];
             }
         }
@@ -47,7 +45,6 @@ namespace Flow
 
         public void Add(IEnumerator func)
         {
-            //System.Diagnostics.Debug.Assert(null != func);
             if(funcs_.Length<=size_){
                 Expand();
             }
