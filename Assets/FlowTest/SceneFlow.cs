@@ -4,7 +4,7 @@ using System.Collections;
 public class SceneFlow : MonoBehaviour
 {
     private Flow.Process process_;
-    private Flow.SequenceCache sequenceCache_ = new Flow.SequenceCache();
+    private Flow.Program program_ = new Flow.Program();
 
     IEnumerator print(string str)
     {
@@ -22,25 +22,25 @@ public class SceneFlow : MonoBehaviour
 
 	void Start()
     {
-        Flow.Sequence sequence = sequenceCache_.sequence();
+        Flow.Sequence sequence = program_.sequence();
         sequence.Add(print("Sequence A"));
         //sequence.Add(Flow.WaitFor.seconds(1.0f));
         sequence.Add(print("Sequence B"));
 
         for(int i = 0; i < 5; ++i) {
-            Flow.Concurrent concurrent = sequenceCache_.concurrent();
+            Flow.Concurrent concurrent = program_.concurrent();
             concurrent.Add(print("Concurrent A" + i));
             concurrent.Add(print("Concurrent B" + i));
             sequence.Add(concurrent);
         }
 
-        Flow.DelayedConcurrent delayedConcurrent = sequenceCache_.delayedConcurrent();
+        Flow.DelayedConcurrent delayedConcurrent = program_.delayedConcurrent();
         delayedConcurrent.Add(print("Delayed A"));
         delayedConcurrent.Add(print("Delayed B"), 1.0f);
-        delayedConcurrent.Add(new Flow.Functor(Flow.ToDelegate1<string>.Do(this.printFunc), "Delayed Func A"), 1.0f);
+        delayedConcurrent.Add(Flow.ToFunctor1<string>.Do(this.printFunc, "Delayed Func A"), 1.0f);
         sequence.Add(delayedConcurrent);
 
-        process_ = sequenceCache_.build(sequence);
+        process_ = program_.build(sequence);
 	}
 
 	void Update()

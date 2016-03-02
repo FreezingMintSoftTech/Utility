@@ -104,17 +104,6 @@ namespace Flow
             cacheDelayedConcurrent_.clear();
         }
 
-        public Process build(IEnumerator func)
-        {
-            return new Process(func);
-        }
-
-        public void destroy(ref Process process)
-        {
-            process.clear();
-            clear();
-        }
-
         public Sequence sequence()
         {
             return cacheSequence_.get();

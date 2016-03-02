@@ -10,11 +10,12 @@ namespace Flow
     public struct Process
     {
         private IEnumerator func_;
+        private Program program_;
 
-        public Process(IEnumerator func)
+        public Process(IEnumerator func, Program program)
         {
-            //System.Diagnostics.Debug.Assert(null != func);
             func_ = func;
+            program_ = program;
         }
 
         public bool run()
@@ -35,6 +36,7 @@ namespace Flow
         public void clear()
         {
             func_ = null;
+            program_.clear();
         }
     }
 }

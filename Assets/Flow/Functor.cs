@@ -6,21 +6,33 @@
 
 namespace Flow
 {
-    public struct ToDelegate0
+    public struct ToFunctor0
     {
         public delegate void Func();
-        public static System.Delegate Do(Func func)
+
+        public static Functor Do(Func func, params System.Object[] args)
         {
-            return func;
+            return new Functor(func, args);
         }
     };
 
-    public struct ToDelegate1<T>
+    public struct ToFunctor1<T>
     {
         public delegate void Func(T t);
-        public static System.Delegate Do(Func func)
+
+        public static Functor Do(Func func, params System.Object[] args)
         {
-            return func;
+            return new Functor(func, args);
+        }
+    };
+
+    public struct ToFunctor2<T0, T1>
+    {
+        public delegate void Func(T0 t0, T1 t1);
+
+        public static Functor Do(Func func, params System.Object[] args)
+        {
+            return new Functor(func, args);
         }
     };
 
