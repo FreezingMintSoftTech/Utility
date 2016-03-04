@@ -10,9 +10,9 @@ namespace Flow
     {
         public delegate void Func();
 
-        public static Functor Do(Func func, params System.Object[] args)
+        public static Functor Do(Func func)
         {
-            return new Functor(func, args);
+            return new Functor(func, null);
         }
     };
 
@@ -46,7 +46,7 @@ namespace Flow
         {
             func_ = func;
             args_ = args;
-            done_ = false;
+            done_ = (null == func_);
         }
 
         public object Current
