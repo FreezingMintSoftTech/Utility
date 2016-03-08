@@ -97,7 +97,7 @@ namespace LUtil
                     toFill.AddVert(vertex);
                 }
 
-                for(int i = 2, tri = 0; i < numPoints; ++i, tri += 3) {
+                for(int i = 2; i < numPoints; ++i) {
                     toFill.AddTriangle(0, i - 1, i);
                 }
                 return;
@@ -154,7 +154,7 @@ namespace LUtil
                 }
             }
 
-            for(int i = 2, tri = 0; i < numPoints; ++i, tri += 3) {
+            for(int i = 2; i < numPoints; ++i) {
                 toFill.AddTriangle(0, i-1, i);
             }
         }
@@ -166,21 +166,21 @@ namespace LUtil
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPoint, eventCamera, out localPoint)){
                 return false;
             }
+            int i0=points_.Length-1, i1=0;
+            bool yflag0 = (localPoint.y <= points_[i0].y);
 
-            int count=0;
-            for(int i0=points_.Length-1, i1=0; i1<points_.Length; i0=i1,++i1){
-                if((localPoint.y<points_[i1].y) == (localPoint.y<points_[i0].y)){
-                    continue;
+            bool flag = false;
+            for(; i1<points_.Length; i0=i1, ++i1) {
+                bool yflag1 = (localPoint.y <= points_[i1].y);
+                if(yflag0 != yflag1) {
+                    if(((localPoint.x-points_[i0].x)*(points_[i1].y - points_[i0].y) <= (points_[i1].x - points_[i0].x) * (localPoint.y - points_[i0].y)) == yflag1) {
+                        flag = !flag;
+                    }
                 }
-                float dy = points_[i1].y-points_[i0].y;
-                if(Mathf.Abs(dy)<1.0e-4f){
-                    continue;
-                }
-                if(((points_[i1].x-points_[i0].x)/dy*(localPoint.y-points_[i0].y) + points_[i0].x)<localPoint.x){
-                    ++count;
-                }
-            }
-            return 0!=(count&0x1);
+                yflag0 = yflag1;
+            }//for(; i1
+
+            return flag;
         }
     }
 }
