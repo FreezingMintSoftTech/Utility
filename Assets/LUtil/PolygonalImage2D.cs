@@ -158,5 +158,29 @@ namespace LUtil
                 toFill.AddTriangle(0, i-1, i);
             }
         }
+
+        // Implements ICanvasRaycastFilter
+        public override bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+        {
+            Vector2 localPoint;
+            if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPoint, eventCamera, out localPoint)){
+                return false;
+            }
+
+            int count=0;
+            for(int i0=points_.Length-1, i1=0; i1<points_.Length; i0=i1,++i1){
+                if((localPoint.y<points_[i1].y) == (localPoint.y<points_[i0].y)){
+                    continue;
+                }
+                float dy = points_[i1].y-points_[i0].y;
+                if(Mathf.Abs(dy)<1.0e-4f){
+                    continue;
+                }
+                if(((points_[i1].x-points_[i0].x)/dy*(localPoint.y-points_[i0].y) + points_[i0].x)<localPoint.x){
+                    ++count;
+                }
+            }
+            return 0!=(count&0x1);
+        }
     }
 }

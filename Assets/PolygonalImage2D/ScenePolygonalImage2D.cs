@@ -10,6 +10,7 @@ public class ScenePolygonalImage2D : MonoBehaviour
 {
     public GameObject image0_;
     public GameObject image1_;
+    public UnityEngine.UI.Button button_;
 
     private int mode_;
 
@@ -50,6 +51,8 @@ public class ScenePolygonalImage2D : MonoBehaviour
             duplicate(offset, image1_);
         }
         change(0);
+
+        button_.onClick.AddListener(onClick);
     }
 
 	void OnGUI()
@@ -60,4 +63,9 @@ public class ScenePolygonalImage2D : MonoBehaviour
             change(mode_);
         }
 	}
+
+    void onClick()
+    {
+        Debug.Log("onClick Button");
+    }
 }

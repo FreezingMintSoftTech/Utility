@@ -18,6 +18,11 @@ namespace Flow
             program_ = program;
         }
 
+        public bool valid()
+        {
+            return null != func_;
+        }
+
         public bool run()
         {
             return func_.MoveNext();
