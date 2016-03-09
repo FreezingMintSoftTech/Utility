@@ -166,6 +166,10 @@ namespace LUtil
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPoint, eventCamera, out localPoint)){
                 return false;
             }
+            if(!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, screenPoint)) {
+                return true;
+            }
+
             int i0=points_.Length-1, i1=0;
             bool yflag0 = (localPoint.y <= points_[i0].y);
 

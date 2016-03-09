@@ -10,7 +10,8 @@ public class ScenePolygonalImage2D : MonoBehaviour
 {
     public GameObject image0_;
     public GameObject image1_;
-    public UnityEngine.UI.Button button_;
+    public UnityEngine.UI.Button buttonNormal_;
+    public UnityEngine.UI.Button buttonPolygonal_;
 
     private int mode_;
 
@@ -52,7 +53,8 @@ public class ScenePolygonalImage2D : MonoBehaviour
         }
         change(0);
 
-        button_.onClick.AddListener(onClick);
+        buttonNormal_.onClick.AddListener(onClickNormal);
+        buttonPolygonal_.onClick.AddListener(onClickPolygonal);
     }
 
 	void OnGUI()
@@ -64,8 +66,13 @@ public class ScenePolygonalImage2D : MonoBehaviour
         }
 	}
 
-    void onClick()
+    void onClickNormal()
     {
-        Debug.Log("onClick Button");
+        Debug.Log("onClick Normal");
+    }
+
+    void onClickPolygonal()
+    {
+        Debug.Log("onClick Polygonal");
     }
 }
