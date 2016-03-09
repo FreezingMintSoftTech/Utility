@@ -162,12 +162,13 @@ namespace LUtil
         // Implements ICanvasRaycastFilter
         public override bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
         {
+            if(!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, screenPoint)) {
+                return true;
+            }
+
             Vector2 localPoint;
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPoint, eventCamera, out localPoint)){
                 return false;
-            }
-            if(!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, screenPoint)) {
-                return true;
             }
 
             int i0=points_.Length-1, i1=0;
